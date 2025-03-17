@@ -1,88 +1,118 @@
-// Контейнер для мячиков
+// контейнер для мячиков
 const ballsContainer = document.getElementById('balls-container');
 
-// Настройки мячиков
-const ballSize = 50; // Размер мячика
-const numBalls = 150; // Количество мячиков
-const balls = []; // Массив для хранения мячиков
+// настройки мячиков
+const ballSize = 50;
+const numBalls = 150;
+const balls = [];
+const friction = 0.997; // коэффициент трения (антизамедление)
+let isPaused = false; // флаг остановки мячиков
 
-// Создаем мячики
+// переменные для притяжения
+let isMouseDown = false;
+let mouseX = 0;
+let mouseY = 0;
+const attractionStrength = 1;
+
+// создаем мячики
 for (let i = 0; i < numBalls; i++) {
     const ball = document.createElement('div');
     ball.className = 'ball';
     ballsContainer.appendChild(ball);
 
-    // Начальные параметры мячика
     balls.push({
         element: ball,
         posX: Math.random() * (window.innerWidth - ballSize),
         posY: Math.random() * (window.innerHeight - ballSize),
-        velocityX: (Math.random() - 0.5) * 25, // Случайная скорость по X
-        velocityY: (Math.random() - 0.5) * 25, // Случайная скорость по Y
+        velocityX: (Math.random() - 0.5) * 25,
+        velocityY: (Math.random() - 0.5) * 25,
     });
 }
 
-// Функция для проверки столкновений с границами viewport
+// функция проверки столкновений с границами viewport
 function checkCollisions(ball) {
-    const windowWidth = window.innerWidth; // Ширина видимой области
-    const windowHeight = window.innerHeight; // Высота видимой области
-    const scrollY = window.scrollY; // Текущая прокрутка страницы по вертикали
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const scrollY = window.scrollY;
 
-    // Проверяем столкновение с левой и правой границами
     if (ball.posX < 0) {
         ball.posX = 0;
-        ball.velocityX = Math.abs(ball.velocityX); // Отскок вправо
+        ball.velocityX = Math.abs(ball.velocityX);
     } else if (ball.posX + ballSize > windowWidth) {
         ball.posX = windowWidth - ballSize;
-        ball.velocityX = -Math.abs(ball.velocityX); // Отскок влево
+        ball.velocityX = -Math.abs(ball.velocityX);
     }
 
-    // Проверяем столкновение с верхней и нижней границами
-    if (ball.posY < scrollY) { // Верхняя граница viewport
+    if (ball.posY < scrollY) {
         ball.posY = scrollY;
-        ball.velocityY = Math.abs(ball.velocityY); // Отскок вниз
-    } else if (ball.posY + ballSize > scrollY + windowHeight) { // Нижняя граница viewport
+        ball.velocityY = Math.abs(ball.velocityY);
+    } else if (ball.posY + ballSize > scrollY + windowHeight) {
         ball.posY = scrollY + windowHeight - ballSize;
-        ball.velocityY = -Math.abs(ball.velocityY); // Отскок вверх
+        ball.velocityY = -Math.abs(ball.velocityY);
     }
 }
 
-// Функция для обновления позиции всех мячиков
+// функция обновления позиций мячиков
 function updateBallsPosition() {
+    if (isPaused) return;
+
     balls.forEach(ball => {
-        // Обновляем позицию мячика
+        if (isMouseDown) {
+            const dx = mouseX - ball.posX;
+            const dy = (mouseY + window.scrollY) - ball.posY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance > 0) {
+                ball.velocityX += (dx / distance) * attractionStrength;
+                ball.velocityY += (dy / distance) * attractionStrength;
+            }
+        }
+
+        // обновляем позиции с учетом замедления
+        ball.velocityX *= friction;
+        ball.velocityY *= friction;
         ball.posX += ball.velocityX;
         ball.posY += ball.velocityY;
 
-        // Проверяем столкновения с границами viewport
         checkCollisions(ball);
 
-        // Применяем новую позицию
         ball.element.style.left = `${ball.posX}px`;
         ball.element.style.top = `${ball.posY}px`;
     });
 
-    // Запускаем анимацию на следующем кадре
     requestAnimationFrame(updateBallsPosition);
 }
 
-// Запускаем движение мячиков
 updateBallsPosition();
 
-// Инвертирование цветов при наведении на мячики
-ballsContainer.addEventListener('mousemove', () => {
-    document.body.classList.add('invert-colors');
+// обработчики притяжения
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') isMouseDown = true;
+    if (e.key === 'ArrowRight') document.body.classList.toggle('invert-colors');
 });
 
-ballsContainer.addEventListener('mouseleave', () => {
-    document.body.classList.remove('invert-colors');
+document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowLeft') isMouseDown = false;
 });
 
-// Обработчик прокрутки страницы
+document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+});
+
+// обработчик остановки мячиков на пробел
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        isPaused = !isPaused;
+        if (!isPaused) updateBallsPosition();
+    }
+});
+
 window.addEventListener('scroll', () => {
-    balls.forEach(ball => checkCollisions(ball)); // Проверяем столкновения при прокрутке
+    balls.forEach(ball => checkCollisions(ball));
 });
 
+// Логика смены языка (оставьте без изменений)
 const translations = {
     fr: {
         welcome: "Bienvenue sur ma page!",
@@ -118,15 +148,12 @@ const translations = {
         hobbyText: "В свободное время я люблю заниматься трэпом. Это помогает мне расслабиться и развивать свои навыки.",
         studyText: "Я учусь на втором курсе. Мои любимые предметы — [нет]. Я стараюсь уделять много времени музыке, чтобы достичь своих целей.",
         musicText: "Я люблю слушать музыку разных жанров. Вот несколько моих любимых треков",
-        footerText: "&copy; 2025 КОНСТАНТИН АНДРЕЕВИЧ ФИЛИППОВ. Все права защищены."
+        footerText: "&copy; 2025 КОНСТАНТИН АНДРЕЕВИЧ ФИЛИППОВ. Все права, информация, композиции, рэп, трэп защищены."
     }
 };
 
 function changeLanguage(lang) {
-    // Получаем тексты для выбранного языка
     const texts = translations[lang];
-
-    // Обновляем текст на странице
     document.querySelector('header h1').textContent = texts.welcome;
     document.querySelector('nav a[href="#about"]').textContent = texts.about;
     document.querySelector('nav a[href="#hobby"]').textContent = texts.hobby;
