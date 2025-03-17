@@ -34,9 +34,9 @@ function checkCollisions(ball) {
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     const scrollY = window.scrollY;
-
-    // получаем высоту header
-    const headerHeight = document.querySelector('header').offsetHeight;
+    const header = document.querySelector('header');
+    const headerHeight = header ? header.offsetHeight : 0;
+    const headerBottom = headerHeight; // нижняя граница хедера в координатах страницы
 
     // проверка столкновений с левым и правым краем экрана
     if (ball.posX < 0) {
@@ -47,11 +47,17 @@ function checkCollisions(ball) {
         ball.velocityX = -Math.abs(ball.velocityX);
     }
 
-    // проверка столкновений с верхней и нижней границей экрана
-    if (ball.posY < scrollY + headerHeight) {  // учитываем высоту header
-        ball.posY = scrollY + headerHeight;
+    // проверка столкновений с верхней границей (учитываем header, только если мяч внутри его зоны)
+    if (ball.posY < scrollY) {
+        ball.posY = scrollY;
         ball.velocityY = Math.abs(ball.velocityY);
-    } else if (ball.posY + ballSize > scrollY + windowHeight) {
+    } else if (ball.posY < headerBottom && scrollY < headerHeight) {
+        ball.posY = headerBottom;
+        ball.velocityY = Math.abs(ball.velocityY);
+    }
+
+    // проверка столкновений с нижней границей экрана
+    if (ball.posY + ballSize > scrollY + windowHeight) {
         ball.posY = scrollY + windowHeight - ballSize;
         ball.velocityY = -Math.abs(ball.velocityY);
     }
