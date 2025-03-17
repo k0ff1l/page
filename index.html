@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos de moi</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Bienvenue sur ma page!</h1>
+        <nav>
+            <ul>
+                <li><a href="#about" class="nav-link">À propos</a></li>
+                <li><a href="#hobby" class="nav-link">Loisirs</a></li>
+                <li><a href="#study" class="nav-link">Études</a></li>
+                <li><a href="#music" class="nav-link">Musique</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="about" class="section">
+        <h2>À propos</h2>
+        <img src="images/unkostik2.mp4" alt="Ma photo" class="profile-photo">
+        <p>Salut! Je m'appelle Konstantin Filippov. J'étudie à l'Université technique d'État de Bauman et je suis passionné par la programmation et la musique. Sur cette page, vous pouvez en apprendre plus sur mes loisirs, mes études et ma musique préférée.</p>
+    </section>
+
+    <section id="hobby" class="section hidden">
+        <h2>Loisirs</h2>
+        <p>Dans mon temps libre, j'aime trapper. Cela m'aide à me détendre et à développer mes compétences.</p>
+    </section>
+
+    <section id="study" class="section hidden">
+        <h2>Études</h2>
+        <p>Je suis en deuxième année. Mes matières préférées sont [aucune]. J'essaie de consacrer beaucoup de temps à la musique pour atteindre mes objectifs.</p>
+    </section>
+
+    <section id="music" class="section hidden">
+        <h2>Musique</h2>
+        <p>J'aime écouter de la musique de différents genres. Voici quelques-uns de mes morceaux préférés</p>
+        <div class="audio-player">
+            <audio controls>
+                <source src="music/track1.mp3" type="audio/mpeg">
+                Votre navigateur ne supporte pas l'élément audio.
+            </audio>
+            <audio controls>
+                <source src="music/track2.mp3" type="audio/mpeg">
+                Votre navigateur ne supporte pas l'élément audio.
+            </audio>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 KONSTANTIN ANDREEVICH FILIPPOV. Tous droits réservés.</p>
+    </footer>
+
+</body>
+</html>
