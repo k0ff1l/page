@@ -68,7 +68,7 @@ function updateBallsPosition() {
     if (isPaused) return;
 
     analyser.getByteFrequencyData(dataArray);
-    const bass = dataArray.slice(2, 4).reduce((a, b) => a + b, 0) / 5;
+    const bass = dataArray[3];
 
     balls.forEach(ball => {
         if (isMouseDown) {
@@ -82,15 +82,15 @@ function updateBallsPosition() {
             }
         }
 
-        if (bass > 70) {
+        if (bass > 200) {
             if (Math.abs(ball.velocityY) < 10) {
                 ball.velocityY += bass * 0.25 * Math.random() * (Math.random() < 0.5 ? 1 : -1);
             }
         }
 
-        if (bass < 70 && bass !== 0) {
-            ball.velocityY += 2;
-            ball.velocityX = 15 * Math.random() * (Math.random() < 0.5 ? 1 : -1);
+        if (bass < 200 && bass !== 0) {
+            ball.velocityY += 5;
+            ball.velocityX = 30 * Math.random() * (Math.random() < 0.5 ? 1 : -1);
         }
 
         ball.velocityX *= friction;
