@@ -37,30 +37,35 @@ nav ul li {
 nav ul li a {
     color: white;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: bolder;
     font-size: 18px;
     transition: color 0.3s ease;
 }
 
 nav ul li a:hover {
     color: rgba(255, 255, 255, 0.7);
+    background-color: white; /* затемнение при наведении */
+    width: 500px;
+    color: black;
+    transform: scale(1.05); /* лёгкое увеличение */
 }
 
 section {
     max-width: 800px;
     margin: 60px auto;
     padding: 20px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.99);
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    opacity: 0;
+    opacity: 0.7;
     transform: translateY(20px);
     animation: fadeInUp 0.6s ease-out forwards;
 }
 
 h2 {
     font-size: 28px;
-    font-weight: 700;
+    font-weight: bold;
+    color: black;
     margin-bottom: 0;
     margin-top: 0;
 }
@@ -69,7 +74,7 @@ p {
     font-size: 18px;
     font-weight: 400;
     line-height: 1.6;
-    color: #333;
+    color: black;
 }
 
 footer {
@@ -134,4 +139,26 @@ footer {
 /* Инвертирование цветов при наведении */
 .invert-colors {
     filter: invert(1);
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px; /* делает кнопки закруглёнными */
+    background-color: black; /* синий цвет фона */
+    color: white; /* белый цвет текста */
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.5s, transform 0.2s;
+}
+
+button:hover {
+    background-color: white; /* затемнение при наведении */
+    color: black;
+    transform: scale(1.1); /* лёгкое увеличение */
+}
+
+button:active {
+    transform: scale(0.95); /* уменьшение при нажатии */
 }

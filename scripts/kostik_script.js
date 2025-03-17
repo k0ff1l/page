@@ -5,7 +5,7 @@ const ballsContainer = document.getElementById('balls-container');
 const ballSize = 50;
 const numBalls = 150;
 const balls = [];
-const friction = 0.997; // коэффициент трения (антизамедление)
+const friction = 0.98; // коэффициент трения (антизамедление)
 let isPaused = false; // флаг остановки мячиков
 
 // переменные для притяжения
@@ -67,6 +67,9 @@ function checkCollisions(ball) {
 function updateBallsPosition() {
     if (isPaused) return;
 
+    analyser.getByteFrequencyData(dataArray);
+    const bass = dataArray.slice(2, 4).reduce((a, b) => a + b, 0) / 5;
+
     balls.forEach(ball => {
         if (isMouseDown) {
             const dx = mouseX - ball.posX;
@@ -79,7 +82,17 @@ function updateBallsPosition() {
             }
         }
 
-        // обновляем позиции с учетом замедления
+        if (bass > 70) {
+            if (Math.abs(ball.velocityY) < 10) {
+                ball.velocityY += bass * 0.25 * Math.random() * (Math.random() < 0.5 ? 1 : -1);
+            }
+        }
+
+        if (bass < 70 && bass !== 0) {
+            ball.velocityY += 2;
+            ball.velocityX = 15 * Math.random() * (Math.random() < 0.5 ? 1 : -1);
+        }
+
         ball.velocityX *= friction;
         ball.velocityY *= friction;
         ball.posX += ball.velocityX;
