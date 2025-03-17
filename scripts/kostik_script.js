@@ -35,6 +35,10 @@ function checkCollisions(ball) {
     const windowHeight = window.innerHeight;
     const scrollY = window.scrollY;
 
+    // получаем высоту header
+    const headerHeight = document.querySelector('header').offsetHeight;
+
+    // проверка столкновений с левым и правым краем экрана
     if (ball.posX < 0) {
         ball.posX = 0;
         ball.velocityX = Math.abs(ball.velocityX);
@@ -43,8 +47,9 @@ function checkCollisions(ball) {
         ball.velocityX = -Math.abs(ball.velocityX);
     }
 
-    if (ball.posY < scrollY) {
-        ball.posY = scrollY;
+    // проверка столкновений с верхней и нижней границей экрана
+    if (ball.posY < scrollY + headerHeight) {  // учитываем высоту header
+        ball.posY = scrollY + headerHeight;
         ball.velocityY = Math.abs(ball.velocityY);
     } else if (ball.posY + ballSize > scrollY + windowHeight) {
         ball.posY = scrollY + windowHeight - ballSize;
