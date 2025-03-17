@@ -37,6 +37,8 @@ function checkCollisions(ball) {
     const header = document.querySelector('header');
     const headerHeight = header ? header.offsetHeight : 0;
     const headerBottom = headerHeight; // нижняя граница хедера в координатах страницы
+    const footer = document.querySelector('footer');
+    const footerBottom = footer ? footer.offsetTop + footer.offsetHeight : document.body.scrollHeight;
 
     // проверка столкновений с левым и правым краем экрана
     if (ball.posX < 0) {
@@ -61,14 +63,44 @@ function checkCollisions(ball) {
         ball.posY = scrollY + windowHeight - ballSize;
         ball.velocityY = -Math.abs(ball.velocityY);
     }
+
+    const maxY = Math.min(scrollY + windowHeight - ballSize, footerBottom - ballSize);
+    if (ball.posY > maxY) {
+        ball.posY = maxY;
+        ball.velocityY = -Math.abs(ball.velocityY);
+    }
 }
+
+// функция мигания h1
+const h1 = document.querySelector("h1");
+
+function updateTitleEffect() {
+    analyser.getByteFrequencyData(dataArray);
+    const bass = dataArray[3];
+
+    if (bass > 200) {
+        h1.style.color = h1.style.color === "black" ? "white" : "black";
+        h1.style.fontWeight = Math.random() * 1000;
+        h1.style.fontStretch = Math.random() * 1000 + "px";
+    }
+
+    if (bass === 0) {
+        h1.style.backgroundColor = "black";
+        h1.style.color = "white";
+    }
+
+    requestAnimationFrame(updateTitleEffect);
+}
+
+updateTitleEffect();
+
 
 // функция обновления позиций мячиков
 function updateBallsPosition() {
     if (isPaused) return;
 
     analyser.getByteFrequencyData(dataArray);
-    const bass = dataArray[3];
+    const bass = (dataArray[3] * 2 + dataArray[4])/3;
 
     balls.forEach(ball => {
         if (isMouseDown) {
